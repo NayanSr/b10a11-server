@@ -36,12 +36,21 @@ async function run() {
 
     const artifactsCollection= client.db("artifactsDB").collection("allArtifacts");
 
+    //! GET
+    app.get('/allArtifacts', async(req,res)=>{
+        const cursor= artifactsCollection.find();
+        const result= await cursor.toArray();
+        res.send(result)
+    })
+    
+    //! POST 
     app.post('/allArtifacts', async(req,res)=>{
         const data= req.body;
         const result= await artifactsCollection.insertOne(data);
         console.log('heated', data);
         res.send(result)
-    })
+    });
+
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
