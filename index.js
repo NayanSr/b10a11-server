@@ -35,6 +35,7 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
 
     const artifactsCollection= client.db("artifactsDB").collection("allArtifacts");
+    const likedArtifactsCollection= client.db("artifactsDB").collection('allLiked')
 
   //! GET
 
@@ -49,16 +50,16 @@ async function run() {
         //? single Data
     app.get(`/allArtifacts/:id`, async(req,res)=>{
       const id= req.params.id;
-      const query= {_id: new ObjectId(id)};
+      const query= {_id: new ObjectId(id)};                 //* { _id: new ObjectId('6776be49ddd224d388564f17') }
       const result=await artifactsCollection.findOne(query);
       res.send(result)
-      // console.log(result);
+      console.log(query);
     })
 
 
         //? top six liked
     app.get('/top-six', async(req,res)=>{
-      const result = await artifactsCollection.find({}).sort({like:-1}).limit(3).toArray();
+      const result = await artifactsCollection.find({}).sort({like:-1}).limit(2).toArray();
       res.send(result)
     })
       
@@ -67,9 +68,37 @@ async function run() {
     app.post('/allArtifacts', async(req,res)=>{
         const data= req.body;
         const result= await artifactsCollection.insertOne(data);
-        console.log('heated', data);
+        // console.log('heated', data);
         res.send(result)
     });
+
+        //? post data in a new collection
+    app.post('/all-liked', async(req,res)=>{
+      const data= req.body;
+      console.log(data);
+      const result= await likedArtifactsCollection.insertOne(data);
+      res.send(result)
+    })
+
+    //! PATCH 
+        //? increase like count
+    app.patch('/allArtifacts/:id', async(req,res)=>{
+      const id= req.params.id;
+      const query= {_id: new ObjectId(id)};
+      const updateDoc= {$inc:{like:1},};
+      const result= await artifactsCollection.updateOne(query,updateDoc);
+
+      // console.log(id, query,result);
+      res.send(result)
+    })
+
+
+
+  /*   
+    const updateDocument = { $inc: { quantity: 1 },};
+
+    const result = await myColl.updateOne(filter, updateDocument); */
+
 
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
