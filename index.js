@@ -53,13 +53,31 @@ async function run() {
       const query= {_id: new ObjectId(id)};                 //* { _id: new ObjectId('6776be49ddd224d388564f17') }
       const result=await artifactsCollection.findOne(query);
       res.send(result)
-      console.log(query);
+      // console.log(query);
     })
 
 
         //? top six liked
     app.get('/top-six', async(req,res)=>{
       const result = await artifactsCollection.find({}).sort({like:-1}).limit(2).toArray();
+      res.send(result)
+    })
+
+
+
+        //? All liked
+    app.get('/all-liked', async(req,res)=>{
+      const result= await likedArtifactsCollection.find().toArray();
+      res.send(result)
+    })
+
+
+        //? getting my liked
+    app.get('/my-liked', async(req,res)=>{
+      const queryEmail= req.query.email;
+     const query= {email:queryEmail} ;
+     const result=await likedArtifactsCollection.find(query).toArray();
+      // console.log(result);
       res.send(result)
     })
       
@@ -75,7 +93,7 @@ async function run() {
         //? post data in a new collection
     app.post('/all-liked', async(req,res)=>{
       const data= req.body;
-      console.log(data);
+      // console.log(data);
       const result= await likedArtifactsCollection.insertOne(data);
       res.send(result)
     })
