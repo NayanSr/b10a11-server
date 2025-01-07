@@ -80,6 +80,19 @@ async function run() {
       // console.log(result);
       res.send(result)
     })
+
+
+        //? getting loggedin user data
+    app.get('/my-artifacts', async (req,res)=>{
+      const email = req.query.email;
+      // const query= `{${addedBy.email}: ${email}}`;
+      const query = { addedPersonEmail: email };
+      const result= await artifactsCollection.find(query).toArray();
+      res.send(result);
+
+      // console.log('query : ', query, result);
+
+    })
       
     
     //! POST 
