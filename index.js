@@ -140,26 +140,27 @@ async function run() {
               discoveredAt: receivdData.discoveredAt,
               presentLocation: receivdData.presentLocation,
               addedBy: receivdData.addedBy,
-              adderPersonEmail: receivdData.adderPersonEmail
+              // adderPersonEmail: receivdData.adderPersonEmail
         }
       };
     const options= {upsert: true};
     const result=await artifactsCollection.updateOne(query,setUpdatedData,options);
     res.send(result)
-      console.log('R: ', receivdData, 'Up: ', setUpdatedData);
+      // console.log('R: ', receivdData, 'Up: ', setUpdatedData);
     })
 
-/* 
- const name= form.name.value;
-    const photo= form.photo.value;
-    const artifactType= form.artifactType.value;
-    const historicalContext= form.historicalContext.value;
-    const createdAt= form.createdAt.value;
-    const discoveredAt= form.discoveredAt.value;
-    const presentLocation= form.presentLocation.value;
-    const addedBy= {name:` ${user?.displayName}`, email:` ${user?.email} `};
-    const adderPersonEmail= `${user?.email}`
- */
+
+
+    //! DELETE
+
+  app.delete('/allArtifacts', async(req,res)=>{
+    const id= req.query.id;
+    const query={_id: new ObjectId(id)};
+    const result= await artifactsCollection.deleteOne(query);
+    res.send(result);
+    // console.log(id, query);
+  })
+
 
 
   /*   
